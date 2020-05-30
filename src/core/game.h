@@ -70,7 +70,7 @@ bool sorbet__init(SORBET_T* sorbet, SORBET_OPTIONS_T* options);
  * compute a tick (frame).
  * @param sorbet sorbet object to compute.
  **/
-void sorbet__tick(SORBET_T* sorbet, SORBET_LENGTH_T delta);
+void sorbet__tick(SORBET_T* sorbet, SDL_Event* event, SORBET_LENGTH_T delta);
 
 /**
  * compute a tick (frame).

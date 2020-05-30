@@ -100,12 +100,11 @@ bool sorbet__init(SORBET_T* sorbet, SORBET_OPTIONS_T *options)
 	return true;
 } // sorbet__init()
 
-void sorbet__tick(SORBET_T* sorbet, SORBET_LENGTH_T delta)
+void sorbet__tick(SORBET_T* sorbet, SDL_Event* event, SORBET_LENGTH_T delta)
 {
-	SDL_Event event;
-	while(SDL_PollEvent(&event))
+	while(SDL_PollEvent(event))
 	{
-		switch (event.type)
+		switch (event->type)
 		{
 			case SDL_QUIT:
 				sorbet->quit = true;
@@ -114,12 +113,13 @@ void sorbet__tick(SORBET_T* sorbet, SORBET_LENGTH_T delta)
 				break;
 		}
 
-		sorbet__custom_tick ? sorbet__custom_tick(sorbet, &event, delta) : NULL;
+		sorbet__custom_tick ? sorbet__custom_tick(sorbet, event, delta) : NULL;
 	}
 } // sorbet__tick()
 
 void sorbet__run(SORBET_T* sorbet)
 {
+	SDL_Event event;
 	SORBET_LENGTH_T TARGET_TICKS_PER_FRAME = 0;
 	SORBET_LENGTH_T TIME = 0, LAST = 0, DELTA = 0;
 
@@ -134,7 +134,7 @@ void sorbet__run(SORBET_T* sorbet)
 		DELTA = (TIME - LAST) > (FRAMERATE * 3)
 			? (FRAMERATE * 3) : (TIME - LAST);
 
-		sorbet__tick(sorbet, DELTA);
+		sorbet__tick(sorbet, &event, DELTA);
 
 		LAST = TIME;
 	}
