@@ -22,65 +22,59 @@
 
 QUEUE_T* queue_create(size_t size)
 {
-	QUEUE_T* q = malloc(sizeof(QUEUE_T));
-	if(!q) {
-		// TODO: logging
-		return NULL;
-	}
+	QUEUE_T* queue = malloc(sizeof(QUEUE_T));
+	if(!queue) { return NULL; }
 
-	q->data = malloc(size);
-	if(!q->data) {
-		// TODO: logging
-		return NULL;
-	}
+	queue->data = malloc(size * sizeof(void));
+	if(!queue->data) { return NULL; }
 	
-	q->capacity = size;
-	q->front = q->size = 0;
-    q->rear = size - 1;
+	queue->front = queue->size = 0;
+    queue->rear = size - 1;
+    queue->used = 0;
+	queue->size = size;
 } // queue_create()
 
 
-
-bool queue_empty(QUEUE_T* q)
+bool queue_empty(QUEUE_T* queue)
 {
-	if(q->size == 0) {
+	if(queue->size == 0) {
 		return true;
 	} else {
 		return false;
 	}
 } // queue_empty()
 
-bool queue_full(QUEUE_T* q)
+bool queue_full(QUEUE_T* queue)
 {
-	if(q->size == q->capacity) {
+	if(queue->size == queue->size) {
 		return true;
 	} else {
 		return false;
 	}
 } // queue_full()
 
-bool queue_push(QUEUE_T* q, void* item)
+bool queue_push(QUEUE_T* queue, void* item)
 {
-	if (queue_full(q) == true) {
+	if (queue_full(queue) == true) {
 		return false;
 	} else {
-		q->rear = (q->rear + 1) % q->capacity; 
-		q->data[q->rear] = item; 
-		q->size = q->size + 1; 
+		queue->rear = (queue->rear + 1) % queue->size; 
+		queue->data[queue->rear] = item; 
+		queue->size = queue->size + 1; 
 	}
 	return true;
 } // queue_push()
 
-QUEUE_ITEM_T queue_pop(QUEUE_T* q)
+void* queue_pop(QUEUE_T* q)
 {
-	QUEUE_ITEM_T *pop_item = NULL;
+	void* item = NULL;
 
     if (queue_empty(q) == true) 
-        return pop_item;
+        return item;
 
-    pop_item = q->data[q->front]; 
-    q->front = (q->front + 1) % q->capacity; 
+    item = q->data[q->front]; 
+    q->front = (q->front + 1) % q->size; 
     q->size = q->size - 1; 
 
-    return pop_item;
+    return item;
 } // () queue_pop()
