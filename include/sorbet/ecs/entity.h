@@ -8,9 +8,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "../data.h"
-#include "collection.h"
-
 /*****************************************************
  * ENUMERATIONS
  *****************************************************/
@@ -26,8 +23,6 @@
 /*****************************************************
  * FUNCTION DECLARATIONS
  *****************************************************/
-
-ENTITY_T* entity__create(ECS__COMPONENT_BIT_T components, void* payload);
 
 /*****************************************************
  * FUNCTION IMPLEMENTATIONS

@@ -19,7 +19,8 @@
  * FUNCTION DECLARATIONS
  *****************************************************/
 
-void (*sorbet_main)(void) = NULL;
+void (*sorbet__custom_tick)(SORBET_T* sorbet,
+	SDL_Event* event, SORBET_LENGTH_T delta) = NULL;
 
 /*****************************************************
  * FUNCTION IMPLEMENTATIONS
@@ -27,158 +28,144 @@ void (*sorbet_main)(void) = NULL;
 
 SORBET_T* sorbet__create()
 {
-	SORBET_T* s = malloc(sizeof(SORBET_T));
-	if(!s) {
-		// TODO: logging
+	SORBET_T* sorbet = malloc(sizeof(SORBET_T));
+	if(!sorbet)
+	{
 		return NULL;
 	}
 
-	s->quit = false;
+	sorbet->options = NULL;
+	sorbet->window = NULL;
+	sorbet->surface = NULL;
+	sorbet->renderer = NULL;
+	sorbet->quit = false;
 
-	s->options = NULL;
-
-	s->window = NULL;
-	s->surface = NULL;
-	s->renderer = NULL;
-
-	return s;
+	return sorbet;
 } // SORBET_T* sorbet__create()
 
-void sorbet__init(SORBET_T* s, s_options_t *options)
+bool sorbet__init(SORBET_T* sorbet, SORBET_OPTIONS_T *options)
 {
-    if(SDL_Init(SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_AUDIO
-		| SDL_INIT_VIDEO) < 0)
+    if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
-		// TODO: logging
-        printf("SDL2 was unable to initalize! Error: %s\n",
-			SDL_GetError());
+        printf("SDL2 could not initalize! Error: %s\n", SDL_GetError());
+		return false;
     }
     else
     {
-
-        s->window = SDL_CreateWindow(options->title,
+        sorbet->window = SDL_CreateWindow(options->title,
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 			options->width, options->height, options->flags);
-        if(s->window)
+        if(sorbet->window)
         {
-			s->renderer = SDL_CreateRenderer(s->window, -1, SDL_RENDERER_ACCELERATED);
-			if(!s->renderer)
+			sorbet->renderer = SDL_CreateRenderer(sorbet->window, -1,
+				SDL_RENDERER_ACCELERATED);
+			if(!sorbet->renderer)
 			{
-				// TODO: logging
-				printf("Renderer could not be created! Error: %s\n",
+				printf("Renderer could not initalize! Error: %s\n",
 					SDL_GetError());
+				return false;
 			}
 
-			s->surface = SDL_GetWindowSurface(s->window);
-			if(!s->surface)
+			sorbet->surface = SDL_GetWindowSurface(sorbet->window);
+			if(!sorbet->surface)
 			{
-				// TODO: logging
-				printf("Surface could not be created! Error: %s\n",
+				printf("Surface could not initalize! Error: %s\n",
 					SDL_GetError());
+				return false;
 			}
 			
 			int img_flags = IMG_INIT_PNG | IMG_INIT_JPG | IMG_INIT_WEBP;
 			if(!(IMG_Init(img_flags) & img_flags))
 			{
-				// TODO: logging
 				printf("SDL_image could not initialize! Error: %s\n",
 					IMG_GetError());
+				return false;
 			}
 
 			if(TTF_Init() == -1)
 			{
-				// TODO: logging
-				printf("SDL_ttf c ould not initialize! Error: %s\n",
+				printf("SDL_ttf could not initialize! Error: %s\n",
 					TTF_GetError());
+				return false;
 			}
 		}
 		else
 		{
-			// TODO: logging
-            printf("Window could not be created! Error: %s\n",
-				SDL_GetError());
+            printf("Window could not be created! Error: %s\n",SDL_GetError());
+			return false;
 		}
     }
 
-	s->options = options;
+	sorbet->options = options;
+	return true;
 } // sorbet__init()
 
-
-void sorbet__run(SORBET_T* s)
+void sorbet__tick(SORBET_T* sorbet, SORBET_LENGTH_T delta)
 {
-	// TODO: logging
-	SDL_Event e;
-	COLLECTION_T* c = s->options->collection;
-
-	unsigned long last = 0, time = 0, delta = 0;
-	unsigned long frame = 0, ticks = 0;
-
-	while (!s->quit)
+	SDL_Event event;
+	while(SDL_PollEvent(&event))
 	{
-		const unsigned long FPS = 60;
-		const unsigned long TICKS_PER_FRAME = 1000 / FPS;
-		
-		time = SDL_GetTicks();
-		delta =  time - last;
+		switch (event.type)
+		{
+			case SDL_QUIT:
+				sorbet->quit = true;
+				break;
+			default:
+				break;
+		}
 
-		if(last < time) {
-			while(SDL_PollEvent(&e) != 0)
+		sorbet__custom_tick ? sorbet__custom_tick(sorbet, &event, delta) : NULL;
+	}
+} // sorbet__tick()
+
+void sorbet__run(SORBET_T* sorbet)
+{
+	SORBET_LENGTH_T TARGET_TICKS_PER_FRAME = 0;
+	SORBET_LENGTH_T TIME = 0, LAST = 0, DELTA = 0;
+
+	while (!sorbet->quit)
+	{
+		TARGET_TICKS_PER_FRAME = 1000 / sorbet->options->framerate;
+		while(!SDL_TICKS_PASSED(SDL_GetTicks(), LAST + TARGET_TICKS_PER_FRAME))
+
+		TIME = SDL_GetTicks();
+		DELTA =  TIME - LAST;
+
+		if(LAST < TIME)
+		{
+			sorbet__tick(sorbet, DELTA);
+		}
+		else
+		{
+			if(DELTA < TARGET_TICKS_PER_FRAME)
 			{
-				if(e.type == SDL_QUIT) { s->quit = true; }
-
-				for(ECS__COLLECTION_SIZE_T i = 0; i<c->system_count; i++) {
-					SYSTEM_T* system = c->systems[i];
-					
-					for(ECS__COLLECTION_SIZE_T j = 0;
-						j<ECS__COLLECTION_MAX; j++) {
-
-						ENTITY_T* entity = system->table[j];
-						if(entity) { system->func(&e, entity, system->table); }
-					}
-					puts("gucci");
-				}
-
-				sorbet_main ? sorbet_main() : NULL;
+				SDL_Delay(TARGET_TICKS_PER_FRAME - DELTA);
 			}
-
-
-			ticks+=delta;
-			frame++;
-			if(frame > TICKS_PER_FRAME) {
-				frame = 1;
-				ticks = delta;
-			}
-		}else {
-			if(delta < TICKS_PER_FRAME){ SDL_Delay(TICKS_PER_FRAME - delta); }
  		}
 
-		last = time;
+		LAST = TIME;
 	}
 	
-	sorbet__exit(s);
-	// TODO: logging
+	sorbet__exit(sorbet);
 } // void sorbet__run()
 
-void sorbet__exit(SORBET_T* s)
+void sorbet__exit(SORBET_T* sorbet)
 {
-	// TODO: logging
 	// deallocate surface
-	SDL_FreeSurface(s->surface);
-	s->surface = NULL;
+	SDL_FreeSurface(sorbet->surface);
+	sorbet->surface = NULL;
 
 	// destroy renderer
-	SDL_DestroyRenderer(s->renderer);
-	s->renderer = NULL;
+	SDL_DestroyRenderer(sorbet->renderer);
+	sorbet->renderer = NULL;
 
 	// destroy window
-	SDL_DestroyWindow(s->window);
-	s->window = NULL;
+	SDL_DestroyWindow(sorbet->window);
+	sorbet->window = NULL;
 
     TTF_Quit();
     IMG_Quit();
  
 	// quit SDL subsystems
 	SDL_Quit();
-
-	// TODO: logging
 } // void sorbet__exit()
