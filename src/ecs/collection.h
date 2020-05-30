@@ -68,6 +68,15 @@ void collection__link_components(COLLECTION_T* collection);
  */
 void collection__flush_components(COLLECTION_T* collection);
 
+/**
+ * process a tick on every single system.
+ * @param collection the collection to process.
+ * @param event event to pass to tick.
+ * @param delta delta between last frame.
+ */
+void collection__tick(COLLECTION_T* collection, SDL_Event* event,
+	SORBET_LENGTH_T delta);
+
 /*****************************************************
  * FUNCTION IMPLEMENTATIONS
  *****************************************************/

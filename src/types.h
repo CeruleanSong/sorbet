@@ -15,6 +15,10 @@ typedef unsigned long SORBET_LENGTH_T;
 #define ECS__COMPONENTS_MAX ((ID_T)1) << 7 // MAX # of components
 #endif
 
+#ifndef ECS__SYSTEMS_MAX
+#define ECS__SYSTEMS_MAX ((ID_T)1) << 7 // MAX # of components
+#endif
+
 /** defines the status of an entity/component */
 typedef enum STATUS {
 	/** interaction not allowed (exists on manager) */

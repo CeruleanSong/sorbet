@@ -41,6 +41,8 @@ bool collection__register_system(COLLECTION_T* collection, SYSTEM_T* system)
 {
 	vector__insert(collection->system_list, system);
 	system->status = DISABLED;
+
+	collection->system_count++;
 } // collection__register_system()
 
 bool collection__register_entity(COLLECTION_T* collection, ENTITY_T* entity)
@@ -111,3 +113,32 @@ void collection__flush_components(COLLECTION_T* collection)
 		}
 	}
 } // collection__flush_componentsI()
+
+
+void collection__tick(COLLECTION_T* collection, SDL_Event* event,
+	SORBET_LENGTH_T delta)
+{
+	LLIST_T* temp = llist_create();
+	SYSTEM_T* system = NULL;
+	LLIST_NODE_T* node = NULL;
+	
+	for(size_t i = 0; i<collection->system_count; i++)
+	{
+		system = collection->system_list->data[i];
+		node = llist_cycle(system->components);
+
+		while(node)
+		{
+			llist_pop(system->components, node->key);
+			llist_push_node_head(temp, node);
+
+			if(node) {
+				system->func(system->components, event, node->data, delta);
+				node = llist_cycle(system->components);
+			}
+		}
+	}
+
+	llist_free(system->components);
+	system->components = temp;
+} // collection__tick()

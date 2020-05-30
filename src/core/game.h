@@ -38,6 +38,7 @@ typedef struct SORBET {
 } SORBET_T;
 
 typedef struct SORBET_OPTIONS {
+	COLLECTION_T* collection;
 	char* title; // window title.
 	short width;  // window width.
 	short height; // window height.

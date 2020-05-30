@@ -113,6 +113,8 @@ void sorbet__tick(SORBET_T* sorbet, SDL_Event* event, SORBET_LENGTH_T delta)
 				break;
 		}
 
+		collection__tick(sorbet->options->collection, event, delta);
+		
 		sorbet__custom_tick ? sorbet__custom_tick(sorbet, event, delta) : NULL;
 	}
 } // sorbet__tick()

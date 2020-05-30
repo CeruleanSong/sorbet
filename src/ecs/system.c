@@ -49,6 +49,4 @@ void system__flush(SYSTEM_T* system)
 
 		head = head->next;
 	}
-
-	llist_node_free(head);
 } // system__flush()
