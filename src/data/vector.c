@@ -22,61 +22,59 @@
 
 VECTOR_T* vector__create(size_t inital_size)
 {
-	VECTOR_T* v = malloc(sizeof(VECTOR_T));
-	if(!v) {
-		// TODO: logging
+	VECTOR_T* vector = malloc(sizeof(VECTOR_T));
+	if(!vector)
+	{
 		return NULL;
 	}
 
-	v->array = malloc(inital_size * sizeof(void));
-	v->used = 0;
-	v->size = inital_size;
+	vector->data = malloc(inital_size * sizeof(void));
+	vector->used = 0;
+	vector->size = inital_size;
 
-	return v;
+	return vector;
 } // vector__create()
 
-void vector__insert(VECTOR_T* v, void* item)
+void vector__insert(VECTOR_T* vector, void* item)
 {
-	if (v->used == v->size)
+	if (vector->used == vector->size)
 	{
-		v->size *= 2;
-		v->array = realloc(v->array, v->size * sizeof(void));
+		vector->size *= 2;
+		vector->data = realloc(vector->data, vector->size * sizeof(void));
 	}
 
-	v->array[v->used++] = item;
+	vector->data[vector->used++] = item;
 } // vector__insert()
 
-void vector__remove(VECTOR_T* v, size_t index)
+void* vector__get(VECTOR_T* vector, size_t index)
 {
-	if(v->size > index)
+	if((index >= 0) && (index < vector->size))
 	{
-		if(v->array[index]) { free(v->array[index]); }
-		v->array[index] = NULL;
-
-		vector__shrink(v);
+		return vector->data[index];
 	}
+	
+	return NULL;
+} // vector__get()
+
+void* vector__remove(VECTOR_T* vector, size_t index)
+{
+	if((index >= 0) && (index < vector->size))
+	{
+		void* tmp = vector->data[index];
+		vector->data[index] = NULL;
+		return tmp;
+	}
+	
+	return NULL;
 } // vector__remove()
 
-void vector__shrink(VECTOR_T* v)
+void vector__free(VECTOR_T* vector)
 {
-	size_t valid = 0;
-	size_t empty = 0;
-	for(size_t i=0; (i<v->size) && (valid<v->used); i++)
+	if(vector)
 	{
-		if(v->array[i]) {
-			v->array[i-empty] = v->array[i];
-			valid++;
-		} else {
-			empty++;
-		}
+		free(vector->data);
+		vector->data = NULL;
+		vector->used = vector->size = 0;
+		free(vector);
 	}
-} // vector__shrink()
-
-void vector__free(VECTOR_T* v)
-{
-	free(v->array);
-	v->array = NULL;
-	v->used = v->size = 0;
-
-	free(v);
 } // vector__free()
