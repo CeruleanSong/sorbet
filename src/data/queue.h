@@ -65,10 +65,16 @@ bool queue_push(QUEUE_T* queue, void* item);
 /**
  * remove an item from a queue.
  * @param queue queue to modify.
- * @param item item to remove from queue.
  * @returns the item removed from the queue (NULL if empty).
  **/
 void* queue_pop(QUEUE_T* queue);
+
+/**
+ * cycle an item into the back of a queue.
+ * @param queue queue to modify.
+ * @returns the item cycled to back of queue (NULL if empty).
+ **/
+void* queue_cycle(QUEUE_T* queue);
 
 /*****************************************************
  * FUNCTION IMPLEMENTATIONS
