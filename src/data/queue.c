@@ -37,7 +37,7 @@ QUEUE_T* queue_create(size_t size)
 
 bool queue_empty(QUEUE_T* queue)
 {
-	if(queue->size == 0) {
+	if(queue->used == 0) {
 		return true;
 	} else {
 		return false;
@@ -46,7 +46,7 @@ bool queue_empty(QUEUE_T* queue)
 
 bool queue_full(QUEUE_T* queue)
 {
-	if(queue->size == queue->size) {
+	if(queue->used == queue->size) {
 		return true;
 	} else {
 		return false;
@@ -60,7 +60,7 @@ bool queue_push(QUEUE_T* queue, void* item)
 	} else {
 		queue->rear = (queue->rear + 1) % queue->size; 
 		queue->data[queue->rear] = item; 
-		queue->size = queue->size + 1; 
+		queue->used = queue->used + 1; 
 	}
 	return true;
 } // queue_push()
@@ -74,7 +74,7 @@ void* queue_pop(QUEUE_T* q)
 
     item = q->data[q->front]; 
     q->front = (q->front + 1) % q->size; 
-    q->size = q->size - 1; 
+    q->used = q->used - 1; 
 
     return item;
 } // () queue_pop()
