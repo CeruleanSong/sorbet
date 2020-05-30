@@ -55,8 +55,9 @@ SYSTEM_T* system__create(void (*func), ID_T system_id);
  * attach a component to system.
  * @param system system to modify.
  * @param component component to attach.
+ * @returns true if success false if not.
  */
-void system__register_component(SYSTEM_T* system, COMPONENT_T* component);
+bool system__register_component(SYSTEM_T* system, COMPONENT_T* component);
 
 /**
  * fluash (expunge) all components from a system.

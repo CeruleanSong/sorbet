@@ -31,10 +31,10 @@ SYSTEM_T* system__create(void (*func), ID_T system_id)
 	system->func = func;
 } // system__create()
 
-void system__register_component(SYSTEM_T* system, COMPONENT_T* component)
+bool system__register_component(SYSTEM_T* system, COMPONENT_T* component)
 {
 	component->status = ENABLED;
-	llist_push_head(system->components, component->entity->entity_id,
+	llist_push_head(system->components, *component->entity->entity_id,
 		component);
 } // system__register_component()
 

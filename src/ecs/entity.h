@@ -31,7 +31,7 @@ typedef struct ENTITY ENTITY_T;
 
 typedef struct ENTITY {
 	/** id of the entity. */
-	ID_T entity_id;
+	ID_T* entity_id;
 	/** list of components attached to entity. */
 	VECTOR_T* components;
 	/** payload attached to entity. */
@@ -58,7 +58,8 @@ ENTITY_T* entity__create(void* payload);
  * attach a component to an entity.
  * @param entity entity to modify.
  * @param component component to attach to entity.
+ * @returns true if success false if not.
  */
-void entity__register_component(ENTITY_T* entity, COMPONENT_T* component);
+bool entity__register_component(ENTITY_T* entity, COMPONENT_T* component);
 
 #endif
