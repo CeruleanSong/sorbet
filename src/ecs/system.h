@@ -8,6 +8,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "../data.h"
+#include "../types.h"
+#include "component.h"
+
 /*****************************************************
  * ENUMERATIONS
  *****************************************************/
@@ -16,9 +20,20 @@
  * TYPE DECLARATIONS
  *****************************************************/
 
+/** container for a system */
+typedef struct SYSTEM SYSTEM_T;
+
 /*****************************************************
  * TYPE IMPLEMENTATIONS
  *****************************************************/
+
+typedef struct SYSTEM {
+	ID_T system_id;
+	LLIST_T* components;
+	STATUS_T status;
+	void (*func)(LLIST_T* components, SDL_Event* event, ENTITY_T* entity,
+		SORBET_LENGTH_T delta);
+} SYSTEM_T;
 
 /*****************************************************
  * FUNCTION DECLARATIONS
@@ -27,5 +42,26 @@
 /*****************************************************
  * FUNCTION IMPLEMENTATIONS
  *****************************************************/
+
+/**
+ * create a blank system container.
+ * @param func the system logic function.
+ * @param system_id identifier code of the system.
+ * @returns a generated system.
+ */
+SYSTEM_T* system__create(void (*func), ID_T system_id);
+
+/**
+ * attach a component to system.
+ * @param system system to modify.
+ * @param component component to attach.
+ */
+void system__register_component(SYSTEM_T* system, COMPONENT_T* component);
+
+/**
+ * fluash (expunge) all components from a system.
+ * @param system system to modify.
+ */
+void system__flush(SYSTEM_T* system);
 
 #endif
