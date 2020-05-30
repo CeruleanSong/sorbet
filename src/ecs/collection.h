@@ -12,13 +12,6 @@
  * ENUMERATIONS
  *****************************************************/
 
-typedef enum ENTITY_STATUS {
-	DISABLED,
-	ENABLED,
-	EXPUNGE,
-	ENTITY_STATUS_MAX
-} ENTITY_STATUS_T;
-
 /*****************************************************
  * TYPE DECLARATIONS
  *****************************************************/

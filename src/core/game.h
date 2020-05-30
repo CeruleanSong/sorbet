@@ -9,6 +9,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "../types.h"
 #include "../ecs/collection.h"
 
 /*****************************************************
@@ -23,9 +24,6 @@
 typedef struct SORBET SORBET_T;
 /** options for initializing sorbet object. */
 typedef struct SORBET_OPTIONS SORBET_OPTIONS_T;
-
-/** type used to define lengths of time */
-typedef unsigned long SORBET_LENGTH_T;
 
 /*****************************************************
  * TYPE IMPLEMENTATIONS
