@@ -1,4 +1,3 @@
-
 #ifndef DATA_VECTOR_H
 #define DATA_VECTOR_H
 
@@ -15,7 +14,7 @@
  * TYPE DECLARATIONS
  *****************************************************/
 
-/** a dynamically resizing arary */
+/** container for a dynamically resizing arary. */
 typedef struct VECTOR VECTOR_T;
 
 /*****************************************************
@@ -45,6 +44,14 @@ VECTOR_T* vector__create(size_t initial_size);
  * @param item the item to insert.
  **/
 void vector__insert(VECTOR_T* vector, void* item);
+
+/**
+ * insert an item into a vector at a specified index.
+ * @param vector vector to modify.
+ * @param item the item to insert.
+ * @param index index to insert item at.
+ **/
+void vector__insert_index(VECTOR_T* vector, void* item, size_t index);
 
 /**
  * retrieve a value from a vector.

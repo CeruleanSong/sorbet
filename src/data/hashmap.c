@@ -1,4 +1,3 @@
-
 #include "hashmap.h"
 
 /*****************************************************
@@ -21,85 +20,88 @@
  * FUNCTION IMPLEMENTATIONS
  *****************************************************/
 
-HASHMAP_T* hashmap__create()
+HASHMAP_T* hashmap__create(size_t initial_size)
 {
-	HASHMAP_T* h = malloc(sizeof(HASHMAP_T));
-	if(!h) {
-		// TODO: logging
+	HASHMAP_T* hashtable = malloc(sizeof(HASHMAP_T));
+	if(!hashtable)
+	{
 		return NULL;
 	}
 
-	h->data = vector__create(50);
-	h->size = 50;
+	hashtable->data = vector__create(initial_size);
+	hashtable->used = 0;
+	hashtable->size = initial_size;
 
-	return h;
-}
+	return hashtable;
+} // hashmap__create()
 
-size_t hashmap__code(HASHMAP_T* h, size_t key)
+size_t hashmap__code(HASHMAP_T* hashtable, size_t key)
 {
-   return key % h->size;
-}
+   return key % hashtable->size;
+} // hashmap__code()
 
-HASHMAP_T* hashmap__search(HASHMAP_T* h, size_t key)
+HASHMAP_T* hashmap__search(HASHMAP_T* hashtable, size_t key)
 {
-	int index = hashmap__code(h,key);  
+	int index = hashmap__code(hashtable,key);  
 
-	while(h->data->array[index] != NULL) {
-
-		if(((HASHMAP_ITEM_T*)h->data->array[index])->key == key)
-			return h->data->array[index]; 
+	while(hashtable->data->data[index] != NULL)
+	{
+		if(((HASHMAP_ITEM_T*)hashtable->data->data[index])->key == key)
+			return hashtable->data->data[index]; 
 			
 		++index;
-		index %= h->size;
+		index %= hashtable->size;
 	}        
 
 	return NULL; 
-}
+} // hashmap__search()
 
-void hashmap__insert(HASHMAP_T* h, size_t key, void* data)
+void hashmap__insert(HASHMAP_T* hashtable, size_t key, void* data)
 {
 	HASHMAP_ITEM_T* item = malloc(sizeof(HASHMAP_ITEM_T));
 	item->data = data;  
 	item->key = key;
 
-	size_t index = hashmap__code(h, key);
+	size_t index = hashmap__code(hashtable, key);
 
-	while(h->data->array[index] != NULL
-		&& ((HASHMAP_ITEM_T*)h->data->array[index])->key != -1) {
-			
+	while(hashtable->data->data[index] != NULL
+		&& ((HASHMAP_ITEM_T*)hashtable->data->data[index])->key != -1)
+	{
 		++index;
 			
-		//wrap around the table
-		index %= h->size;
+		index %= hashtable->size;
 	}
 		
-	h->data->array[index] = item;
-}
+	hashtable->data->data[index] = item;
+} // hashmap__insert()
 
-HASHMAP_ITEM_T* hashmap__remove(HASHMAP_T* h, size_t key)
+HASHMAP_ITEM_T* hashmap__remove(HASHMAP_T* hashtable, size_t key)
 {
-	int index = hashmap__code(h, key);
+	int index = hashmap__code(hashtable, key);
 
-	while(h->data->array[index] != NULL) {
-		
-		if(((HASHMAP_ITEM_T*)h->data->array[index])->key == key) {
-			HASHMAP_ITEM_T* temp = h->data->array[index]; 
+	while(hashtable->data->data[index] != NULL)
+	{
+		if(((HASHMAP_ITEM_T*)hashtable->data->data[index])->key == key)
+		{
+			HASHMAP_ITEM_T* temp = hashtable->data->data[index]; 
 				
-			//assign a dummy item at deleted position
-			h->data->array[index] = NULL; 
+			hashtable->data->data[index] = NULL; 
 			return temp;
 		}
 			
 		++index;
 			
-		index %= h->size;
+		index %= hashtable->size;
 	}      
 		
 	return NULL;
-}
+} // hashmap__remove()
 
-void hashmap__free(HASHMAP_T* h)
+void hashmap__free(HASHMAP_T* hashtable)
 {
-	vector__free(h->data);
-	free(h);
-}
+	if(hashtable)
+	{
+		vector__free(hashtable->data);
+		free(hashtable);
+	}
+} // hashmap__free()
