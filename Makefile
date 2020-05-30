@@ -22,7 +22,7 @@ LIB_DIR = lib
 INCLUDE_DIR = include/sorbet
 
 COMPILER_FLAGS = -Wall
-LINKER_FLAGS = -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+LINKER_FLAGS = -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -llua
 CXX = gcc
 
 ###################################### targets
