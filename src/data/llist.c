@@ -20,7 +20,7 @@
  * FUNCTION IMPLEMENTATIONS
  *****************************************************/
 
-LLIST_T* llist_create(size_t size)
+LLIST_T* llist_create()
 {
 	LLIST_T* llist = malloc(sizeof(LLIST_T));
 	if(!llist) { return NULL; }

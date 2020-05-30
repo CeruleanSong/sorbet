@@ -43,10 +43,9 @@ typedef struct LLIST_NODE {
 
 /** 
  * create an empty linked list.
- * @param size length of linked list.
  * @returns an empty linked list.
  **/
-LLIST_T* llist_create(size_t size);
+LLIST_T* llist_create();
 
 /**
  * insert an item into the front of a linked list.
