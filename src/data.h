@@ -2,6 +2,7 @@
 #define SORBET_DATA_H
 
 #include "data/hashmap.h"
+#include "data/llist.h"
 #include "data/queue.h"
 #include "data/vector.h"
 
