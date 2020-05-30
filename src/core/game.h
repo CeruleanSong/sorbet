@@ -67,19 +67,19 @@ bool sorbet__init(SORBET_T* sorbet, SORBET_OPTIONS_T* options);
 /**
  * compute a tick (frame).
  * @param sorbet sorbet object to compute.
- **/
+ */
 void sorbet__tick(SORBET_T* sorbet, SDL_Event* event, SORBET_LENGTH_T delta);
 
 /**
  * compute a tick (frame).
  * @param sorbet sorbet object to compute.
- **/
+ */
 void sorbet__run(SORBET_T* sorbet);
 
 /**
  * exit sorbet and uninatialize all subsystems.
  * @param sorbet sorbet object to compute.
- **/
+ */
 void sorbet__exit(SORBET_T* sorbet);
 
 /*****************************************************
@@ -89,7 +89,7 @@ void sorbet__exit(SORBET_T* sorbet);
 /**
  * a custom tick function to run during game loop. (IMPLEMENTED BY DEVELOPER)
  * @param sorbet sorbet object to compute.
- **/
+ */
 extern void (*sorbet__custom_tick)(SORBET_T* sorbet,
 	SDL_Event* event, SORBET_LENGTH_T delta);
 

@@ -17,13 +17,13 @@ typedef unsigned long SORBET_LENGTH_T;
 
 /** defines the status of an entity/component */
 typedef enum STATUS {
-	/** interaction not allowed (exists on system) */
+	/** interaction not allowed (exists on manager) */
 	DISABLED,
-	/** interaction allowed (assumes linked) */
+	/** interaction allowed (assumes linked to manager) */
 	ENABLED,
-	/** is queued to be removed from it's system */
+	/** is queued to be removed from it's manager */
 	EXPUNGE,
-	/** does not exist on it's system*/
+	/** does not exist on it's manager*/
 	UNLINKED
 } STATUS_T;
 
