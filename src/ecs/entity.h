@@ -51,14 +51,14 @@ typedef struct ENTITY {
 /**
  * create an empty entity with a specified payload.
  * @param payload payload to attach to entity.
- **/
+ */
 ENTITY_T* entity__create(void* payload);
 
 /**
  * attach a component to an entity.
  * @param entity entity to modify.
  * @param component component to attach to entity.
- **/
+ */
 void entity__register_component(ENTITY_T* entity, COMPONENT_T* component);
 
 #endif

@@ -53,7 +53,7 @@ typedef struct COMPONENT {
  * @param payload data to attach to component.
  * @param system_id system the component belongs to.
  * @returns returns a generated component.
- **/
+ */
 COMPONENT_T* component__create(void* payload, ID_T system_id);
 
 #endif
