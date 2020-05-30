@@ -62,6 +62,20 @@ void llist_push_head(LLIST_T* llist, size_t key, void* item);
 void llist_push_tail(LLIST_T* llist, size_t key, void* item);
 
 /**
+ * insert an node into the front of a linked list.
+ * @param llist linked list to modify.
+ * @param node node to insert into linked list.
+ **/
+void llist_push_node_head(LLIST_T* llist, LLIST_NODE_T* node);
+
+/**
+ * insert an node into the back of a linked list.
+ * @param llist linked list to modify.
+ * @param node node to insert into linked list.
+ **/
+void llist_push_node_tail(LLIST_T* llist, LLIST_NODE_T* node);
+
+/**
  * remove an item from a linked list.
  * @param llist linked list to modify.
  * @param key the key of the item to remove.

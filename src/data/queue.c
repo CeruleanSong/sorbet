@@ -25,7 +25,7 @@ QUEUE_T* queue_create(size_t size)
 	QUEUE_T* queue = malloc(sizeof(QUEUE_T));
 	if(!queue) { return NULL; }
 
-	queue->data = malloc(size * sizeof(void));
+	queue->data = malloc(size * sizeof(void*));
 	if(!queue->data) { return NULL; }
 	
 	queue->front = queue->size = 0;

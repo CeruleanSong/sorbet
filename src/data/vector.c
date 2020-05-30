@@ -28,7 +28,7 @@ VECTOR_T* vector__create(size_t inital_size)
 		return NULL;
 	}
 
-	vector->data = malloc(inital_size * sizeof(void));
+	vector->data = malloc(inital_size * sizeof(void*));
 	vector->used = 0;
 	vector->size = inital_size;
 
