@@ -70,6 +70,13 @@ void llist_push_tail(LLIST_T* llist, size_t key, void* item);
 LLIST_NODE_T* llist_pop(LLIST_T* llist, size_t key);
 
 /**
+ * remove all items from a linked list.
+ * @param llist linked list to modify.
+ * @returns a pointer to the head node.
+ **/
+LLIST_NODE_T* llist_pop_all(LLIST_T* llist);
+
+/**
  * get an item from a linked list.
  * @param llist linked list to modify.
  * @param key the key of the item to get.

@@ -115,6 +115,17 @@ LLIST_NODE_T* llist_pop(LLIST_T* llist, size_t key)
 	return node;
 } // llist_pop()
 
+LLIST_NODE_T* llist_pop_all(LLIST_T* llist)
+{
+	LLIST_NODE_T* node = llist->head;
+
+	llist->head = NULL;
+	llist->tail = NULL;
+	llist->size = 0;
+	
+	return node;
+} // llist_pop_all()
+
 LLIST_NODE_T* llist_get(LLIST_T* llist, size_t key)
 {
 	LLIST_NODE_T* node = llist->head;
