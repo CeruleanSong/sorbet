@@ -25,15 +25,16 @@ typedef struct LLIST_NODE LLIST_NODE_T;
  *****************************************************/
 
 typedef struct LLIST {
-    LLIST_NODE_T* head; // index of front item in queue.
-	LLIST_NODE_T* tail; // index of rear item in queue.
+    LLIST_NODE_T* head; // front item in linked listl.
+	LLIST_NODE_T* tail; // rear item in linked listl.
+	size_t size; // length of linked listl
 } LLIST_T;
 
 typedef struct LLIST_NODE {
-    LLIST_NODE_T* next; // index of front item in queue.
-	LLIST_NODE_T* back; // index of rear item in queue.
-	size_t key; // queue array.
-	void* data; // queue array.
+    LLIST_NODE_T* next; // next item.
+	LLIST_NODE_T* back; // previous item.
+	size_t key; // key of node.
+	void* data; // payload.
 } LLIST_NODE_T;
 
 /*****************************************************

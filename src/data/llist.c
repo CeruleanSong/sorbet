@@ -27,6 +27,7 @@ LLIST_T* llist_create(size_t size)
 
 	llist->head = NULL;
 	llist->tail = NULL;
+	llist->size = 0;
 } // llist_create
 
 void llist_push_head(LLIST_T* llist, size_t key, void* item)
@@ -50,6 +51,7 @@ void llist_push_head(LLIST_T* llist, size_t key, void* item)
 		llist->tail = node;
 		llist->head = node;
 	}
+	++llist->size;
 } // llist_push_head()
 
 void llist_push_tail(LLIST_T* llist, size_t key, void* item)
@@ -73,6 +75,7 @@ void llist_push_tail(LLIST_T* llist, size_t key, void* item)
 		llist->tail = node;
 		llist->head = node;
 	}
+	++llist->size;
 } // llist_push_tail()
 
 LLIST_NODE_T* llist_pop(LLIST_T* llist, size_t key)
@@ -84,27 +87,31 @@ LLIST_NODE_T* llist_pop(LLIST_T* llist, size_t key)
 		node = node->next;
 	}
 
-	if(node->back)
+	if(node)
 	{
-		node->back->next = node->next;
-	}
-	else
-	{
-		llist->head = node->next;
-	}
+		if(node->back)
+		{
+			node->back->next = node->next;
+		}
+		else
+		{
+			llist->head = node->next;
+		}
 
-	if(node->next)
-	{
-		node->next->back = node->back;
-	}
-	else
-	{
-		llist->tail = node->back;
-	}
+		if(node->next)
+		{
+			node->next->back = node->back;
+		}
+		else
+		{
+			llist->tail = node->back;
+		}
 
-	node->back = NULL;
-	node->next = NULL;
-
+		node->back = NULL;
+		node->next = NULL;
+		--llist->size;
+	}
+	
 	return node;
 } // llist_pop()
 
