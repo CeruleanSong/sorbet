@@ -74,7 +74,7 @@ bool sorbet__init(SORBET_T* sorbet, SORBET_OPTIONS_T *options)
 				return false;
 			}
 			
-			int img_flags = IMG_INIT_PNG | IMG_INIT_JPG | IMG_INIT_WEBP;
+			int img_flags = IMG_INIT_PNG;
 			if(!(IMG_Init(img_flags) & img_flags))
 			{
 				printf("SDL_image could not initialize! Error: %s\n",
@@ -104,7 +104,7 @@ void sorbet__tick(SORBET_T* sorbet, SDL_Event* event, SORBET_LENGTH_T delta)
 {
 	COLLECTION_T* collection = sorbet->options->collection;
 
-	SDL_SetRenderDrawColor(sorbet->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(sorbet->renderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(sorbet->renderer);
 
 	while(SDL_PollEvent(event))
