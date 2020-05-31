@@ -115,30 +115,24 @@ void collection__flush_components(COLLECTION_T* collection)
 } // collection__flush_componentsI()
 
 
-void collection__tick(COLLECTION_T* collection, SDL_Event* event,
-	SORBET_LENGTH_T delta)
+void collection__tick(SORBET_T* sorbet, COLLECTION_T* collection,
+	SDL_Event* event, SORBET_LENGTH_T delta)
 {
-	LLIST_T* temp = llist_create();
 	SYSTEM_T* system = NULL;
 	LLIST_NODE_T* node = NULL;
 	
 	for(size_t i = 0; i<collection->system_count; i++)
 	{
 		system = collection->system_list->data[i];
-		node = llist_cycle(system->components);
+		node = system->components->head;
 
 		while(node)
 		{
-			llist_pop(system->components, node->key);
-			llist_push_node_head(temp, node);
-
 			if(node) {
-				system->func(system->components, event, node->data, delta);
-				node = llist_cycle(system->components);
+				system->func(sorbet, system->components, event,
+					node->data, delta);
+				node = node->next;
 			}
 		}
 	}
-
-	llist_free(system->components);
-	system->components = temp;
 } // collection__tick()

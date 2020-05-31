@@ -20,7 +20,7 @@
  * FUNCTION IMPLEMENTATIONS
  *****************************************************/
 
-ENTITY_T* entity__create(void* payload)
+ENTITY_T* entity__create(void* payload, void (*update), void (*render))
 {
 	ENTITY_T* entity = malloc(sizeof(ENTITY_T));
 	if(!entity) { return NULL; }
@@ -29,6 +29,8 @@ ENTITY_T* entity__create(void* payload)
 	entity->components = vector__create(1);
 	entity->payload = payload;
 	entity->status = UNLINKED;
+	entity->update = update;
+	entity->render = render;
 
 	return entity;
 } // entity__create()

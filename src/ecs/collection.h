@@ -11,6 +11,8 @@
 #include "../types.h"
 #include "system.h"
 
+typedef struct SORBET SORBET_T;
+
 /*****************************************************
  * ENUMERATIONS
  *****************************************************/
@@ -74,8 +76,8 @@ void collection__flush_components(COLLECTION_T* collection);
  * @param event event to pass to tick.
  * @param delta delta between last frame.
  */
-void collection__tick(COLLECTION_T* collection, SDL_Event* event,
-	SORBET_LENGTH_T delta);
+void collection__tick(SORBET_T* sorbet, COLLECTION_T* collection,
+	SDL_Event* event, SORBET_LENGTH_T delta);
 
 /*****************************************************
  * FUNCTION IMPLEMENTATIONS

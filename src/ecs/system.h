@@ -31,8 +31,8 @@ typedef struct SYSTEM {
 	ID_T system_id;
 	LLIST_T* components;
 	STATUS_T status;
-	void (*func)(LLIST_T* components, SDL_Event* event, COMPONENT_T* component,
-		SORBET_LENGTH_T delta);
+	void (*func)(SORBET_T* sorbet, LLIST_T* components, SDL_Event* event,
+		COMPONENT_T* component, SORBET_LENGTH_T delta);
 } SYSTEM_T;
 
 /*****************************************************

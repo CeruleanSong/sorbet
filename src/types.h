@@ -5,7 +5,7 @@
 typedef unsigned long int ID_T;
 
 /** type used to define lengths of time */
-typedef unsigned long SORBET_LENGTH_T;
+typedef double SORBET_LENGTH_T;
 
 #ifndef ECS__ENTITIES_MAX
 #define ECS__ENTITIES_MAX ((ID_T)1) << 20 // MAX # of entities

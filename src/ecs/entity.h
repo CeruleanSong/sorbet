@@ -13,6 +13,7 @@
 #include "component.h"
 
 typedef struct COMPONENT COMPONENT_T;
+typedef struct SORBET SORBET_T;
 
 /*****************************************************
  * ENUMERATIONS
@@ -38,6 +39,10 @@ typedef struct ENTITY {
 	void* payload;
 	/** status of the entity. */
 	STATUS_T status;
+	/** update the object */
+	void (*update)(SORBET_T* sorbet, void* payload, SORBET_LENGTH_T delta);
+	/** render the object */
+	void (*render)(SORBET_T* sorbet, void* payload, SORBET_LENGTH_T delta);
 } ENTITY_T;
 
 /*****************************************************
@@ -51,8 +56,10 @@ typedef struct ENTITY {
 /**
  * create an empty entity with a specified payload.
  * @param payload payload to attach to entity.
+ * @param update update function.
+ * @param render render function.
  */
-ENTITY_T* entity__create(void* payload);
+ENTITY_T* entity__create(void* payload, void (*update), void (*render));
 
 /**
  * attach a component to an entity.

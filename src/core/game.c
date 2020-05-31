@@ -102,6 +102,11 @@ bool sorbet__init(SORBET_T* sorbet, SORBET_OPTIONS_T *options)
 
 void sorbet__tick(SORBET_T* sorbet, SDL_Event* event, SORBET_LENGTH_T delta)
 {
+	COLLECTION_T* collection = sorbet->options->collection;
+
+	SDL_SetRenderDrawColor(sorbet->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(sorbet->renderer);
+
 	while(SDL_PollEvent(event))
 	{
 		switch (event->type)
@@ -113,10 +118,25 @@ void sorbet__tick(SORBET_T* sorbet, SDL_Event* event, SORBET_LENGTH_T delta)
 				break;
 		}
 
-		collection__tick(sorbet->options->collection, event, delta);
-		
+		collection__tick(sorbet, collection, event, delta);
 		sorbet__custom_tick ? sorbet__custom_tick(sorbet, event, delta) : NULL;
 	}
+
+	for(size_t i = 0; i<collection->entity_count; i++)
+	{
+		ENTITY_T* entity = collection->entity_list->data[i];
+		if(entity->update)
+			entity->update(sorbet, entity->payload, delta);
+	}
+
+	for(size_t i = 0; i<collection->entity_count; i++)
+	{
+		ENTITY_T* entity = collection->entity_list->data[i];
+		if(entity->render)
+			entity->render(sorbet, entity->payload, delta);
+	}
+
+	SDL_RenderPresent(sorbet->renderer);
 } // sorbet__tick()
 
 void sorbet__run(SORBET_T* sorbet)
@@ -128,13 +148,13 @@ void sorbet__run(SORBET_T* sorbet)
 	while (!sorbet->quit)
 	{
 		SORBET_LENGTH_T FRAMERATE = sorbet->options->framerate;
-
 		TARGET_TICKS_PER_FRAME = 1000 / FRAMERATE;
-		while(!SDL_TICKS_PASSED(SDL_GetTicks(), LAST + TARGET_TICKS_PER_FRAME))
+
+		while(!SDL_TICKS_PASSED(SDL_GetTicks(), LAST + TARGET_TICKS_PER_FRAME));
 
 		TIME = SDL_GetTicks();
 		DELTA = (TIME - LAST) > (FRAMERATE * 3)
-			? (FRAMERATE * 3) : (TIME - LAST);
+			? (FRAMERATE * 3) / 1000 : (TIME - LAST) / 1000;
 
 		sorbet__tick(sorbet, &event, DELTA);
 
