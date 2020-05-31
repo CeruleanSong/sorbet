@@ -20,7 +20,7 @@
  * FUNCTION IMPLEMENTATIONS
  *****************************************************/
 
-LLIST_T* llist_create()
+LLIST_T* llist__create()
 {
 	LLIST_T* llist = malloc(sizeof(LLIST_T));
 	if(!llist) { return NULL; }
@@ -28,9 +28,9 @@ LLIST_T* llist_create()
 	llist->head = NULL;
 	llist->tail = NULL;
 	llist->size = 0;
-} // llist_create
+} // llist__create
 
-void llist_push_head(LLIST_T* llist, size_t key, void* item)
+void llist__push_head(LLIST_T* llist, size_t key, void* item)
 {
 	LLIST_NODE_T* node = malloc(sizeof(LLIST_NODE_T));
 	if(!node) { return; }
@@ -52,9 +52,9 @@ void llist_push_head(LLIST_T* llist, size_t key, void* item)
 		llist->head = node;
 	}
 	++llist->size;
-} // llist_push_head()
+} // llist__push_head()
 
-void llist_push_tail(LLIST_T* llist, size_t key, void* item)
+void llist__push_tail(LLIST_T* llist, size_t key, void* item)
 {
 	LLIST_NODE_T* node = malloc(sizeof(LLIST_NODE_T));
 	if(!node) { return; }
@@ -76,9 +76,9 @@ void llist_push_tail(LLIST_T* llist, size_t key, void* item)
 		llist->head = node;
 	}
 	++llist->size;
-} // llist_push_tail()
+} // llist__push_tail()
 
-void llist_push_node_head(LLIST_T* llist, LLIST_NODE_T* node)
+void llist__push_node_head(LLIST_T* llist, LLIST_NODE_T* node)
 {
 	if(llist->head)
 	{
@@ -97,9 +97,9 @@ void llist_push_node_head(LLIST_T* llist, LLIST_NODE_T* node)
 	node->next = NULL;
 
 	return;
-} // llist_push_node_head()
+} // llist__push_node_head()
 
-void llist_push_node_tail(LLIST_T* llist, LLIST_NODE_T* node)
+void llist__push_node_tail(LLIST_T* llist, LLIST_NODE_T* node)
 {
 	if(llist->tail)
 	{
@@ -118,9 +118,9 @@ void llist_push_node_tail(LLIST_T* llist, LLIST_NODE_T* node)
 	node->next = NULL;
 
 	return;
-} // llist_push_node_tail
+} // llist__push_node_tail
 
-LLIST_NODE_T* llist_pop(LLIST_T* llist, size_t key)
+LLIST_NODE_T* llist__pop(LLIST_T* llist, size_t key)
 {
 	LLIST_NODE_T* node = llist->head;
 
@@ -155,9 +155,9 @@ LLIST_NODE_T* llist_pop(LLIST_T* llist, size_t key)
 	}
 	
 	return node;
-} // llist_pop()
+} // llist__pop()
 
-LLIST_NODE_T* llist_pop_all(LLIST_T* llist)
+LLIST_NODE_T* llist__pop_all(LLIST_T* llist)
 {
 	LLIST_NODE_T* node = llist->head;
 
@@ -166,9 +166,9 @@ LLIST_NODE_T* llist_pop_all(LLIST_T* llist)
 	llist->size = 0;
 	
 	return node;
-} // llist_pop_all()
+} // llist__pop_all()
 
-LLIST_NODE_T* llist_get(LLIST_T* llist, size_t key)
+LLIST_NODE_T* llist__get(LLIST_T* llist, size_t key)
 {
 	LLIST_NODE_T* node = llist->head;
 
@@ -178,47 +178,47 @@ LLIST_NODE_T* llist_get(LLIST_T* llist, size_t key)
 	}
 
 	return node;
-} // llist_get()
+} // llist__get()
 
-LLIST_NODE_T* llist_peek_head(LLIST_T* llist)
+LLIST_NODE_T* llist__peek_head(LLIST_T* llist)
 {
 	return llist->head;
-} // llist_peek_head()
+} // llist__peek_head()
 
-LLIST_NODE_T* llist_peek_tail(LLIST_T* llist)
+LLIST_NODE_T* llist__peek_tail(LLIST_T* llist)
 {
 	return llist->tail;
-} // llist_peek_tail()
+} // llist__peek_tail()
 
-LLIST_NODE_T* llist_cycle(LLIST_T* llist)
+LLIST_NODE_T* llist__cycle(LLIST_T* llist)
 {
-	LLIST_NODE_T* node = llist_peek_head(llist);
+	LLIST_NODE_T* node = llist__peek_head(llist);
 	if(node)
 	{
-		llist_pop(llist, node->key);
-		llist_push_tail(llist, node->key, node->data);
+		llist__pop(llist, node->key);
+		llist__push_tail(llist, node->key, node->data);
 
 		free(node);
 
-		return llist_peek_tail(llist);
+		return llist__peek_tail(llist);
 	}
 	
 	return NULL;
-} // llist_cycle()
+} // llist__cycle()
 
-void llist_free(LLIST_T* llist)
+void llist__free(LLIST_T* llist)
 {
 	if(llist)
 	{
-		llist_node_free(llist->head);
+		llist__node_free(llist->head);
 		free(llist);
 		llist = NULL;
 	}
-} // llist_free()
+} // llist__free()
 
-void llist_node_free(LLIST_NODE_T* node)
+void llist__node_free(LLIST_NODE_T* node)
 {
-	if(node && node->next) { llist_node_free(node->next); }
+	if(node && node->next) { llist__node_free(node->next); }
 	free(node);
 	node = NULL;
-} // llist_node_free()
+} // llist__node_free()

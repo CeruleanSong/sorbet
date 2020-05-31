@@ -93,7 +93,7 @@ void collection__link_components(COLLECTION_T* collection)
 				system = collection->system_list->data[k];
 				if(system)
 				{
-					llist_push_head(system->components,
+					llist__push_head(system->components,
 						*component->entity->entity_id, component);
 				}
 			}
