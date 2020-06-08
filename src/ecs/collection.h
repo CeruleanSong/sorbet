@@ -5,13 +5,15 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include <SDL2/SDL.h>
-
-#include "../data.h"
 #include "../types.h"
-#include "system.h"
+#include "../set/queue.h"
+#include "../set/vector.h"
 
-typedef struct SORBET SORBET_T;
+#include "system.h"
+#include "entity.h"
+
+typedef struct ENTITY ENTITY_T;
+typedef struct SYSTEM SYSTEM_T;
 
 /*****************************************************
  * ENUMERATIONS
@@ -21,16 +23,25 @@ typedef struct SORBET SORBET_T;
  * TYPE DECLARATIONS
  *****************************************************/
 
+/** container for a collection */
+typedef struct COLLECTION COLLECTION_T;
+
 /*****************************************************
  * TYPE IMPLEMENTATIONS
  *****************************************************/
 
 typedef struct COLLECTION {
+	/** # of systems in collection */
 	size_t system_count;
+	/** list of all systems */
 	VECTOR_T* system_list;
+	/** # of entities in collection */
 	size_t entity_count;
+	/** list of all entities */
 	VECTOR_T* entity_list;
+	/** # of id's created */
 	size_t id_count;
+	/** queue of available id's */
 	QUEUE_T* id_pool;
 } COLLECTION_T;
 
@@ -39,45 +50,45 @@ typedef struct COLLECTION {
  *****************************************************/
 
 /**
- * creates a blank collection.
+ * create an empty collection.
  * @returns a blank collection.
  */
 COLLECTION_T* collection__create();
 
 /**
- * register a system into the collection.
- * @param collection the collection to modify.
- * @param system the system to link.
+ * register an system to a collection.
+ * @param collection collection to add to.
+ * @param system system to link.
+ * @returns true if successful, else false.
  */
-bool collection__register_system(COLLECTION_T* collection, SYSTEM_T* system);
+bool collection__attach_system(COLLECTION_T* collection, SYSTEM_T* system);
 
 /**
- * register a entity into the collection.
- * @param collection the collection to modify.
- * @param entity the entity to link.
+ * register an entity to a collection.
+ * @param collection collection to add to.
+ * @param entity entity to link.
+ * @returns true if successful, else false.
  */
-bool collection__register_entity(COLLECTION_T* collection, ENTITY_T* entity);
+bool collection__attach_entity(COLLECTION_T* collection, ENTITY_T* entity);
 
 /**
- * link the components of every entity onto their corresponding system.
+ * insert every component into their corresponding system.
  * @param collection the collection to modify.
  */
-void collection__link_components(COLLECTION_T* collection);
+void collection__link(COLLECTION_T* collection);
 
 /**
- * remove all components from every system.
- * @param collection the collection to modify.
+ * expunge a collection.
+ * @param collection collection to modify.
  */
-void collection__flush_components(COLLECTION_T* collection);
+void collection__flush(COLLECTION_T* collection);
 
 /**
  * process a tick on every single system.
+ * @param sorbet sorbet context to bind to.
  * @param collection the collection to process.
- * @param event event to pass to tick.
- * @param delta delta between last frame.
  */
-void collection__tick(SORBET_T* sorbet, COLLECTION_T* collection,
-	SDL_Event* event, SORBET_LENGTH_T delta);
+void collection__tick(SORBET_T* sorbet, COLLECTION_T* collection);
 
 /*****************************************************
  * FUNCTION IMPLEMENTATIONS

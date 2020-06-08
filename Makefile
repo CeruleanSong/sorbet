@@ -1,54 +1,48 @@
-#	Last Edit: 2020-05-24
+#	Last Edit: 2020-06-07
 #	Author: Elias Mawa
-#
-# MAKE TARGETS
-# ------------
-# the following targets are available :
-#	$ make				link and compile
-#	$ make				link and compile
-#   $ make windows	 	link and compile to windows
-#   $ make run		 	run program linux && windows
 
-
-###################################### config
-
-OBJ_NAME = libsorbet
+## config
+OBJ_NAME = sorbet
+LIB_NAME = lib$(OBJ_NAME)
 
 SRC_DIR = src
 BUILD_DIR = bin
-OBJ_DIR = obj
 
+INCLUDE_DIR = include
 LIB_DIR = lib
-INCLUDE_DIR = include/sorbet
 
 COMPILER_FLAGS = -Wall
-LINKER_FLAGS = -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -llua
+LINKER_FLAGS = -lglfw -llua
+
 CXX = gcc
+CXX_WIN = x86_64-w64-mingw32-gcc
 
-###################################### targets
+SORBET_INCLUDE = sorbet/include
 
+## targets
 SRC = $(wildcard $(SRC_DIR)/*.c)
 SRC += $(wildcard $(SRC_DIR)/*/*.c)
 SRC += $(wildcard $(SRC_DIR)/*/*/*.c)
 SRC += $(wildcard $(SRC_DIR)/*/*/*/*.c)
 
-OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/static/%.o, $(SRC))
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRC))
 
-###################################### compile scripts
-
-all : $(OBJS)
+## scripts
+all : $(OBJS) $(LIB_DIR)/$(LIB_NAME)
 	mkdir -p $(LIB_DIR)
-	ar -rcs $(LIB_DIR)/libsorbet.a $(OBJS)
-	mkdir -p $(INCLUDE_DIR)
-	cp -r src/* $(INCLUDE_DIR)
+	mkdir -p $(INCLUDE_DIR)/$(OBJ_NAME)
+	cd src && cp -r ./**/*.h ../$(INCLUDE_DIR)/$(OBJ_NAME) --parents && cd ..
+	cd src && cp -r ./**.h ../$(INCLUDE_DIR)/$(OBJ_NAME) --parents && cd ..
 
-###################################### compile helpers
-
-$(OBJ_DIR)/static/%.o: $(SRC_DIR)/%.c
+## helpers
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(@D)
 	$(CXX) -fPIC -c $? -o $@
 
-###################################### utility scripts
+$(LIB_DIR)/$(LIB_NAME):
+	mkdir -p $(@D)
+	ar -rcs $@.a $(OBJS)
 
+## utility
 clean :
-	rm -rf $(LIB_DIR) $(BUILD_DIR) include $(OBJ_DIR) 
+	rm -rf $(BUILD_DIR) $(LIB_DIR) $(INCLUDE_DIR)

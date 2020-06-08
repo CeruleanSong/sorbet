@@ -20,23 +20,23 @@
  * FUNCTION IMPLEMENTATIONS
  *****************************************************/
 
-ENTITY_T* entity__create(void* payload, void (*update), void (*render))
+ENTITY_T* entity__create(void* payload, void (*tick), void (*render))
 {
 	ENTITY_T* entity = malloc(sizeof(ENTITY_T));
 	if(!entity) { return NULL; }
 
 	entity->entity_id = NULL;
-	entity->components = vector__create(1);
+	entity->component_list = vector__create(1);
 	entity->payload = payload;
 	entity->status = UNLINKED;
-	entity->update = update;
+	entity->tick = tick;
 	entity->render = render;
 
 	return entity;
 } // entity__create()
 
-bool entity__register_component(ENTITY_T* entity, COMPONENT_T* component)
+bool entity__attach_component(ENTITY_T* entity, COMPONENT_T* component)
 {
 	component->entity = entity;
-	vector__insert(entity->components, component);
+	vector__insert(entity->component_list, component);
 } // entity__register_component()

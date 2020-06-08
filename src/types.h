@@ -1,6 +1,9 @@
 #ifndef ECS_TYPES_H
 #define ECS_TYPES_H
 
+#define max(a, b) (((a) < (b)) ? (b) : (a))
+#define min(a, b) (((b) < (a)) ? (b) : (a))
+
 /** type used to define ID numbers */
 typedef unsigned long int ID_T;
 

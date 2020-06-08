@@ -210,15 +210,19 @@ void llist__free(LLIST_T* llist)
 {
 	if(llist)
 	{
-		llist__node_free(llist->head);
+		llist__free_node(llist->head);
 		free(llist);
 		llist = NULL;
 	}
 } // llist__free()
 
-void llist__node_free(LLIST_NODE_T* node)
+void llist__free_node(LLIST_NODE_T* node)
 {
-	if(node && node->next) { llist__node_free(node->next); }
-	free(node);
-	node = NULL;
+	if(node)
+	{
+		node->next = NULL;
+		node->back = NULL;
+		free(node);
+		node = NULL;
+	}
 } // llist__node_free()

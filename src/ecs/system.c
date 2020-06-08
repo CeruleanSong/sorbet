@@ -26,27 +26,33 @@ SYSTEM_T* system__create(void (*func), ID_T system_id)
 	if(!system) { return NULL; }
 
 	system->system_id = system_id;
-	system->components = llist__create();
+	system->component_list = llist__create();
 	system->status = UNLINKED;
-	system->func = func;
+	system->tick = func;
 } // system__create()
 
-bool system__register_component(SYSTEM_T* system, COMPONENT_T* component)
+bool system__attach_component(SYSTEM_T* system, COMPONENT_T* component)
 {
 	component->status = ENABLED;
-	llist__push_head(system->components, *component->entity->entity_id,
+	llist__push_head(system->component_list, *component->entity->entity_id,
 		component);
-} // system__register_component()
+} // system__attach_component()
 
 void system__flush(SYSTEM_T* system)
 {
-	LLIST_NODE_T* head = llist__pop_all(system->components);
-	LLIST_NODE_T* node = head;
-	while(head)
+	LLIST_NODE_T* node = llist__peek_head(system->component_list);
+	LLIST_NODE_T* next = node;
+	
+	while(next)
 	{
-		COMPONENT_T* component = (COMPONENT_T*) head->data;
+		COMPONENT_T* component = (COMPONENT_T*) next->data;
 		component->status = UNLINKED;
 
-		head = head->next;
+		next = node->next;
+		llist__free_node(node);
 	}
+
+	system->component_list->head = NULL;
+	system->component_list->tail = NULL;
+	system->component_list->size = 0;
 } // system__flush()

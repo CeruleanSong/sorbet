@@ -129,7 +129,7 @@ void llist__free(LLIST_T* llist);
  * free a linked list node from memory.
  * @param node node to free
  **/
-void llist__node_free(LLIST_NODE_T* node);
+void llist__free_node(LLIST_NODE_T* node);
 
 /*****************************************************
  * FUNCTION IMPLEMENTATIONS

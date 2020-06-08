@@ -1,19 +1,14 @@
 #ifndef ECS_ENTITIY_H
 #define ECS_ENTITIY_H
 
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-
-#include "../data.h"
 #include "../types.h"
+#include "../core/engine.h"
+#include "../set/vector.h"
+
 #include "component.h"
 
-typedef struct COMPONENT COMPONENT_T;
 typedef struct SORBET SORBET_T;
+typedef struct COMPONENT COMPONENT_T;
 
 /*****************************************************
  * ENUMERATIONS
@@ -33,16 +28,16 @@ typedef struct ENTITY ENTITY_T;
 typedef struct ENTITY {
 	/** id of the entity. */
 	ID_T* entity_id;
-	/** list of components attached to entity. */
-	VECTOR_T* components;
+	/** list of attached components */
+	VECTOR_T* component_list;
 	/** payload attached to entity. */
 	void* payload;
 	/** status of the entity. */
 	STATUS_T status;
-	/** update the object */
-	void (*update)(SORBET_T* sorbet, void* payload, SORBET_LENGTH_T delta);
-	/** render the object */
-	void (*render)(SORBET_T* sorbet, void* payload, SORBET_LENGTH_T delta);
+	/** update function */
+	void (*tick)(SORBET_T* sorbet, ENTITY_T* entity);
+	/** render function */
+	void (*render)(SORBET_T* sorbet, ENTITY_T* entity);
 } ENTITY_T;
 
 /*****************************************************
@@ -57,9 +52,9 @@ typedef struct ENTITY {
  * create an empty entity with a specified payload.
  * @param payload payload to attach to entity.
  * @param update update function.
- * @param render render function.
+ * @param tick tick function.
  */
-ENTITY_T* entity__create(void* payload, void (*update), void (*render));
+ENTITY_T* entity__create(void* payload, void (*update), void (*tick));
 
 /**
  * attach a component to an entity.
@@ -67,6 +62,6 @@ ENTITY_T* entity__create(void* payload, void (*update), void (*render));
  * @param component component to attach to entity.
  * @returns true if success false if not.
  */
-bool entity__register_component(ENTITY_T* entity, COMPONENT_T* component);
+bool entity__attach_component(ENTITY_T* entity, COMPONENT_T* component);
 
 #endif

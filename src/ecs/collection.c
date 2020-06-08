@@ -1,4 +1,4 @@
-#include "collection.h"
+#include "component.h"
 
 /*****************************************************
  * ENUMERATIONS
@@ -37,7 +37,7 @@ COLLECTION_T* collection__create()
 	return colection;
 } // collection__create()
 
-bool collection__register_system(COLLECTION_T* collection, SYSTEM_T* system)
+bool collection__attach_system(COLLECTION_T* collection, SYSTEM_T* system)
 {
 	vector__insert(collection->system_list, system);
 	system->status = DISABLED;
@@ -45,7 +45,7 @@ bool collection__register_system(COLLECTION_T* collection, SYSTEM_T* system)
 	collection->system_count++;
 } // collection__register_system()
 
-bool collection__register_entity(COLLECTION_T* collection, ENTITY_T* entity)
+bool collection__attach_entity(COLLECTION_T* collection, ENTITY_T* entity)
 {
 	ID_T* entity_id = NULL;
 
@@ -73,35 +73,27 @@ bool collection__register_entity(COLLECTION_T* collection, ENTITY_T* entity)
 	return false;
 } // collection__register_entity()
 
-void collection__link_components(COLLECTION_T* collection)
+void collection__link(COLLECTION_T* collection)
 {
-	size_t size = collection->entity_list->size;
-	size_t used = collection->entity_list->used;
+	size_t num_entities = collection->entity_list->size;
 
-	ENTITY_T* entity = NULL;
-	COMPONENT_T* component = NULL;
-	SYSTEM_T* system = NULL;
-
-	for(size_t i = 0; i<size; i++)
+	for(size_t i = 0; i<num_entities; i++)
 	{
-		entity = collection->entity_list->data[i];
-		for(size_t j = 0; j<entity->components->size && entity; j++)
+		ENTITY_T* entity = collection->entity_list->data[i];
+		VECTOR_T* component_list = entity->component_list;
+
+		for(int j = 0; j<component_list->size; j++)
 		{
-			component = entity->components->data[j];
-			for(size_t k = 0; k<collection->system_list->size && component; k++)
+			if(component_list->data[j])
 			{
-				system = collection->system_list->data[k];
-				if(system)
-				{
-					llist__push_head(system->components,
-						*component->entity->entity_id, component);
-				}
+				COMPONENT_T* component = component_list->data[j];
+				system__attach_component(component->system, component);
 			}
 		}
 	}
 } // collection__link_components()
 
-void collection__flush_components(COLLECTION_T* collection)
+void collection__flush(COLLECTION_T* collection)
 {
 	SYSTEM_T* system = NULL;
 	for(size_t i = 0; i<collection->system_list->size; i++)
@@ -112,27 +104,22 @@ void collection__flush_components(COLLECTION_T* collection)
 			system__flush(system);
 		}
 	}
-} // collection__flush_componentsI()
+} // collection__flush()
 
-
-void collection__tick(SORBET_T* sorbet, COLLECTION_T* collection,
-	SDL_Event* event, SORBET_LENGTH_T delta)
+void collection__tick(SORBET_T* sorbet, COLLECTION_T* collection)
 {
 	SYSTEM_T* system = NULL;
-	LLIST_NODE_T* node = NULL;
-	
+	LLIST_NODE_T* component = NULL;
+
 	for(size_t i = 0; i<collection->system_count; i++)
 	{
 		system = collection->system_list->data[i];
-		node = system->components->head;
+		component = system->component_list->head;
 
-		while(node)
+		while(component && system->tick)
 		{
-			if(node) {
-				system->func(sorbet, system->components, event,
-					node->data, delta);
-				node = node->next;
-			}
+			system->tick(sorbet, system, component->data);
+			component = component->next;
 		}
 	}
 } // collection__tick()
