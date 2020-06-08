@@ -75,6 +75,10 @@ bool sorbet__init(SORBET_T* sorbet, SORBET_OPTIONS_T* options)
 
 		glfwMakeContextCurrent(sorbet->window);
 		glfwSwapInterval(1);
+
+  		glEnable(GL_DEPTH_TEST);
+  		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	return true;
@@ -180,7 +184,7 @@ void sorbet__tick(SORBET_T* sorbet)
 		for(size_t i = 0; i<entity_count; i++)
 		{
 			ENTITY_T* entity = entity_list->data[i];
-			if(entity->tick) { (sorbet, entity); }
+			if(entity->tick) { entity->tick(sorbet, entity); }
 		}
 
 		glfwPollEvents();
@@ -191,9 +195,14 @@ void sorbet__tick(SORBET_T* sorbet)
 void sorbet__draw(SORBET_T* sorbet)
 {
 	SORBET_OPTIONS_T *options = sorbet->options;
-	
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glViewport(0, 0, options->width, options->height);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glOrtho(0, options->width, 0, options->height, 0, 1.0f);
+	glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 
 	size_t entity_count = sorbet->collection->entity_count;
 	VECTOR_T* entity_list = sorbet->collection->entity_list;
@@ -201,7 +210,7 @@ void sorbet__draw(SORBET_T* sorbet)
 	for(size_t i = 0; i<entity_count; i++)
 	{
 		ENTITY_T* entity = entity_list->data[i];
-			if(entity->render) { (sorbet, entity); }
+		if(entity->render) { entity->render(sorbet, entity); }
 	}
 
 	glfwSwapBuffers(sorbet->window);

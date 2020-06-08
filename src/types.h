@@ -1,6 +1,8 @@
 #ifndef ECS_TYPES_H
 #define ECS_TYPES_H
 
+#define M_PI 3.14159265358979323846
+
 #define max(a, b) (((a) < (b)) ? (b) : (a))
 #define min(a, b) (((b) < (a)) ? (b) : (a))
 

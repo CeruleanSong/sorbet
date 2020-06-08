@@ -54,7 +54,7 @@ typedef struct ENTITY {
  * @param update update function.
  * @param tick tick function.
  */
-ENTITY_T* entity__create(void* payload, void (*update), void (*tick));
+ENTITY_T* entity__create(void* payload, void (*update), void (*render));
 
 /**
  * attach a component to an entity.

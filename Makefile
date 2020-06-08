@@ -12,7 +12,7 @@ INCLUDE_DIR = include
 LIB_DIR = lib
 
 COMPILER_FLAGS = -Wall
-LINKER_FLAGS = -lglfw -llua
+LINKER_FLAGS = -lglfw -llua -lm -ldl
 
 CXX = gcc
 CXX_WIN = x86_64-w64-mingw32-gcc
